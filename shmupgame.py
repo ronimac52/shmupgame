@@ -2,9 +2,9 @@
 import pygame
 import random
 
-WIDTH = 360 # width of new game window
-HEIGHT = 480 # height ------------
-FPS = 30 # frames per second
+WIDTH = 480 # width of new game window
+HEIGHT = 600 # height ------------
+FPS = 60 # frames per second
 
 # define Colors (R, G, B)
 BLACK = (0, 0, 0)
