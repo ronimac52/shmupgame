@@ -1,4 +1,4 @@
-# Pygame template - skeleton for new pygame projects - from www.kidscancode.com.
+# Pygame template - skeleton for new pygame projects - from www.kidscancode.org.
 import pygame
 import random
 
