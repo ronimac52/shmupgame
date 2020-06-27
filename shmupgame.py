@@ -17,7 +17,7 @@ BLUE = (0, 0, 255)
 pygame.init()
 pygame.mixer.init()  # for sound
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("My Game")
+pygame.display.set_caption("Shmup")
 clock = pygame.time.Clock()
 
 all_sprites = pygame.sprite.Group()
