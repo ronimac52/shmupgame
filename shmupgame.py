@@ -63,12 +63,15 @@ class Mob(pygame.sprite.Sprite):
             self.speedy = random.randrange(1, 8)
 # spawn sprites
 all_sprites = pygame.sprite.Group()
+mobs = pygame.sprite.Group()
 player = Player() #create new object in Player class
 all_sprites.add(player) # add object to all_sprites so it gets updated and drawn
 for i in range(8):
     m = Mob()
     all_sprites.add(m)
-    Mob.add(m)
+    mobs.add(m)
+
+
 # Game Loop
 running = True
 while running:
@@ -81,6 +84,9 @@ while running:
             running = False
     # Update
     all_sprites.update()
+
+
+# check to see if a mob hits the player
 
     # Render (draw)
     # Draw / render
