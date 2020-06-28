@@ -42,11 +42,33 @@ class Player(pygame.sprite.Sprite):
             self.rect.right = WIDTH
         if self.rect.left < 0:
             self.rect.left = 0
+
+class Mob(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((30, 40))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randrange(WIDTH - self.rect.width) # sprites appear randomly across screen
+        self.rect.y = random.randrange(-100, -40) #spawn randomly vertically (off-screen)
+        self.speedy = random.randrange(1, 8)  #sprite move down at different speeds
+        self.speedx = random.randrange(-3, 3) # random sideways movement
+
+    def update(self):
+        self.rect.x += self.speedx # move sideways
+        self.rect.y += self.speedy # move down
+        if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 20: #  if leaves screen, respawn randomly at top
+            self.rect.x = random.randrange(WIDTH - self.rect.width)
+            self.rect.y = random.randrange(-100, -40)
+            self.speedy = random.randrange(1, 8)
 # spawn sprites
 all_sprites = pygame.sprite.Group()
 player = Player() #create new object in Player class
 all_sprites.add(player) # add object to all_sprites so it gets updated and drawn
-
+for i in range(8):
+    m = Mob()
+    all_sprites.add(m)
+    Mob.add(m)
 # Game Loop
 running = True
 while running:
