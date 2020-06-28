@@ -31,8 +31,17 @@ class Player(pygame.sprite.Sprite):
         self.speedx = 0 # To move side to side (x axis)
 
     def update(self):# what happens every update in animation loop
+        self.speedx = 0
+        keystate = pygame.key.get_pressed() #returns dictionary of every key with a boolean True for each pressed key
+        if keystate[pygame.K_LEFT]:
+            self.speedx = -5
+        if keystate[pygame.K_RIGHT]:
+            self.speedx = 5
         self.rect.x += self.speedx # move on x axis by whatever speed is set on self.speed.x
-
+        if self.rect.right > WIDTH:
+            self.rect.right = WIDTH
+        if self.rect.left < 0:
+            self.rect.left = 0
 # spawn sprites
 all_sprites = pygame.sprite.Group()
 player = Player() #create new object in Player class
