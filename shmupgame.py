@@ -1,6 +1,10 @@
 # Pygame template - skeleton for new pygame projects - from www.kidscancode.org.
 import pygame
 import random
+from os import path # so we can use local files on computer
+
+img_dir = path.join(path.dirname(__file__), 'img') # img_dir variable will be path to img folder
+
 
 WIDTH = 480 # width of new game window
 HEIGHT = 600 # height ------------
@@ -47,6 +51,7 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
         bullet = Bullet(self.rect.centerx, self.rect.top)
         all_sprites.add(bullet)
+        bullets.add(bullet)
 
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
@@ -82,18 +87,20 @@ class Bullet(pygame.sprite.Sprite):
         # kill if it moves off the top of the screen
         if self.rect.bottom < 0:
             self.kill()
+
+# Load all game graphics
+background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()
+background_rect = background.get_rect()
 # spawn sprites
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
-
 player = Player() #create new object in Player class
 all_sprites.add(player) # add object to all_sprites so it gets updated and drawn
 for i in range(8):
     m = Mob()
     all_sprites.add(m)
     mobs.add(m)
-
 
 # Game Loop
 running = True
@@ -111,7 +118,14 @@ while running:
     # Update
     all_sprites.update()
 
-    # check to see if a mob hits the player
+    # check to see if a bullet hits a mob and delete bullet and mob
+    hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
+    for hit in hits:
+        m = Mob()
+        all_sprites.add(m)
+        mobs.add(m)
+
+      # check to see if a mob hits the player
     hits = pygame.sprite.spritecollide(player, mobs, False)
     if hits:
         running = False
@@ -119,6 +133,7 @@ while running:
     # Render (draw)
     # Draw / render
     screen.fill(BLACK)
+    screen.blit(background, background_rect) # blit combines several bitmaps into one
     all_sprites.draw(screen)
 
     # *after* drawing everything, flip the display
