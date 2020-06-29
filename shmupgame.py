@@ -91,6 +91,9 @@ class Bullet(pygame.sprite.Sprite):
 # Load all game graphics
 background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()
 background_rect = background.get_rect()
+player_img = pygame.image.load(path.join(img_dir, "playerShip1_orange.png")).convert()
+meteor_img = pygame.image.load(path.join(img_dir, "meteorBrown_med1.png")).convert()
+bullet_img = pygame.image.load(path.join(img_dir, "laserRed16.png")).convert()
 # spawn sprites
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
