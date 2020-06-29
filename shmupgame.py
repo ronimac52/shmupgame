@@ -28,8 +28,7 @@ clock = pygame.time.Clock()
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)# Initiate sprite
-        self.image = pygame.Surface((50, 40))# plain rectangle for now
-        self.image.fill(GREEN)
+        self.image = pygame.transform.scale(player_img, (50, 38)) #pygame.transform.scale()changed(reduced) size
         self.rect = self.image.get_rect()# get rect from Pygame
         self.rect.centerx = WIDTH / 2# position middle of window
         self.rect.bottom = HEIGHT - 10# 10 px from bottom
@@ -91,7 +90,7 @@ class Bullet(pygame.sprite.Sprite):
 # Load all game graphics
 background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()
 background_rect = background.get_rect()
-player_img = pygame.image.load(path.join(img_dir, "playerShip1_orange.png")).convert()
+player_img = pygame.image.load(path.join(img_dir, "playerShip2_orange.png")).convert()
 meteor_img = pygame.image.load(path.join(img_dir, "meteorBrown_med1.png")).convert()
 bullet_img = pygame.image.load(path.join(img_dir, "laserRed16.png")).convert()
 # spawn sprites
