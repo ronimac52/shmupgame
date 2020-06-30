@@ -77,7 +77,11 @@ class Mob(pygame.sprite.Sprite):
         if now - self.last_update > 50: # if its more than 50 milliseconds since last update
             self.last_update = now # rotate now
             self.rot = (self.rot + self.rot_speed) % 360 # ensure rotation loops back to 1
-            self.image = pygame.transform.rotate(self.image_orig, self.rot) # rotate image by value of self.rot
+            new_image = pygame.transform.rotate(self.image_orig, self.rot) # new image rotated by value of self.rot
+            old_center = self.rect.center # variable to hold position of current center of rect
+            self.image = new_image
+            self.rect = self.image.get_rect() # get new rectangle
+            self.rect.center = old_center # center new rect on same spot as old rect
 
     def update(self):
         self.rotate() # everytime we update we check to see if its time to rotate
