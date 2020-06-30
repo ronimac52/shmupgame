@@ -58,8 +58,9 @@ class Player(pygame.sprite.Sprite):
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = meteor_img
-        self.image.set_colorkey(BLACK)
+        self.image_orig = meteor_img
+        self.image_orig.set_colorkey(BLACK)
+        self.image = self.image_orig.copy() # make self.image a copy of original (fresh copy each rotate)
         self.rect = self.image.get_rect()
         self.radius = int(self.rect.width * .85 / 2)
         #pygame.draw.circle(self.image, RED, self.rect.center, self.radius)
@@ -67,8 +68,19 @@ class Mob(pygame.sprite.Sprite):
         self.rect.y = random.randrange(-100, -40) #spawn randomly vertically (off-screen)
         self.speedy = random.randrange(1, 8)  #sprite move down at different speeds
         self.speedx = random.randrange(-3, 3) # random sideways movement
+        self.rot = 0 # variable to rotate sprite
+        self.rot_speed = random.randrange(-8, 8) # random speed - rotates spries in different directions
+        self.last_update = pygame.time.get_ticks() # variable to be updated everytime image is updated
+
+    def rotate(self):
+        now = pygame.time.get_ticks() # check time now
+        if now - self.last_update > 50: # if its more than 50 milliseconds since last update
+            self.last_update = now # rotate now
+            self.rot = (self.rot + self.rot_speed) % 360 # ensure rotation loops back to 1
+            self.image = pygame.transform.rotate(self.image_orig, self.rot) # rotate image by value of self.rot
 
     def update(self):
+        self.rotate() # everytime we update we check to see if its time to rotate
         self.rect.x += self.speedx # move sideways
         self.rect.y += self.speedy # move down
         if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 20: #  if leaves screen, respawn randomly at top
