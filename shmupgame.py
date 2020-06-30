@@ -58,7 +58,7 @@ class Player(pygame.sprite.Sprite):
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image_orig = meteor_img
+        self.image_orig = random.choice(meteor_images)
         self.image_orig.set_colorkey(BLACK)
         self.image = self.image_orig.copy() # make self.image a copy of original (fresh copy each rotate)
         self.rect = self.image.get_rect()
@@ -112,8 +112,15 @@ class Bullet(pygame.sprite.Sprite):
 background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()
 background_rect = background.get_rect()
 player_img = pygame.image.load(path.join(img_dir, "playerShip2_orange.png")).convert()
-meteor_img = pygame.image.load(path.join(img_dir, "meteorBrown_med1.png")).convert()
 bullet_img = pygame.image.load(path.join(img_dir, "laserRed16.png")).convert()
+meteor_images = []
+meteor_list =['meteorBrown_big1.png','meteorBrown_big2.png',
+              'meteorBrown_med1.png','meteorBrown_med3.png',
+              'meteorBrown_small1.png','meteorBrown_small2.png',
+              'meteorBrown_tiny1.png']
+
+for img in meteor_list:
+    meteor_images.append(pygame.image.load(path.join(img_dir, img)).convert())
 # spawn sprites
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
