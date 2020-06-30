@@ -65,7 +65,7 @@ class Mob(pygame.sprite.Sprite):
         self.radius = int(self.rect.width * .85 / 2)
         #pygame.draw.circle(self.image, RED, self.rect.center, self.radius)
         self.rect.x = random.randrange(WIDTH - self.rect.width) # sprites appear randomly across screen
-        self.rect.y = random.randrange(-100, -40) #spawn randomly vertically (off-screen)
+        self.rect.y = random.randrange(-150, -100) #spawn randomly vertically (off-screen)
         self.speedy = random.randrange(1, 8)  #sprite move down at different speeds
         self.speedx = random.randrange(-3, 3) # random sideways movement
         self.rot = 0 # variable to rotate sprite
