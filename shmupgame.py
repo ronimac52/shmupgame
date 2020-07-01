@@ -131,6 +131,7 @@ for i in range(8):
     m = Mob()
     all_sprites.add(m)
     mobs.add(m)
+score = 0 # initialise variable to add to and keep track of score
 
 # Game Loop
 running = True
@@ -151,6 +152,7 @@ while running:
     # check to see if a bullet hits a mob and delete bullet and mob
     hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
     for hit in hits:
+        score += 50 - hit.radius # add 50 - radius of mob to score for each hit
         m = Mob()
         all_sprites.add(m)
         mobs.add(m)
