@@ -24,6 +24,21 @@ pygame.mixer.init()  # for sound
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Shmup")
 clock = pygame.time.Clock()
+
+# Define function to draw text
+# with parameters: surf = surface we want text drawn on,
+# text = the text which will be a string,
+# size = size of font,
+# x and y = coordinates of where we want text to be
+font_name = pygame.font.match_font('arial') # find an arial font on computer
+def draw_text(surf, text, size, x, y):
+    font = pygame.font.Font(font_name, size) # font object
+    text_surface = font.render(text, True, WHITE) # True = anti-aliased
+    text_rect = text_surface.get_rect()
+    text_rect.midtop = (x, y)
+    surf.blit(text_surface, text_rect)
+
+
 # set up Player class
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -167,6 +182,7 @@ while running:
     screen.fill(BLACK)
     screen.blit(background, background_rect) # blit combines several bitmaps into one
     all_sprites.draw(screen)
+    draw_text(screen, str(score), 18, WIDTH / 2, 10)
 
     # *after* drawing everything, flip the display
     pygame.display.flip()
