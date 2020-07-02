@@ -1,10 +1,15 @@
 # Pygame template - skeleton for new pygame projects - from www.kidscancode.org.
+# Frozen Jam by tgfcoder <https://twitter.com/tgfcoder> licensed under CC-BY-3
+# Art from Kenney.nl
+
+
+# this comment is just a test to show Louie git and github
 import pygame
 import random
 from os import path # so we can use local files on computer
 
 img_dir = path.join(path.dirname(__file__), 'img') # img_dir variable will be path to img folder
-
+snd_dir = path.join(path.dirname(__file__), 'snd') # snd_dir = path to sound folder
 
 WIDTH = 480 # width of new game window
 HEIGHT = 600 # height ------------
@@ -19,8 +24,9 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
 # initialise pygame and create window
+pygame.mixer.pre_init(44100, -16, 1, 256)
 pygame.init()
-pygame.mixer.init()  # for sound
+pygame.mixer.init(frequency=44100)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Shmup")
 clock = pygame.time.Clock()
@@ -69,6 +75,7 @@ class Player(pygame.sprite.Sprite):
         bullet = Bullet(self.rect.centerx, self.rect.top)
         all_sprites.add(bullet)
         bullets.add(bullet)
+        #shoot_sound.play()
 
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
@@ -136,6 +143,13 @@ meteor_list =['meteorBrown_big1.png','meteorBrown_big2.png',
 
 for img in meteor_list:
     meteor_images.append(pygame.image.load(path.join(img_dir, img)).convert())
+
+# Load all game sounds
+#shoot_sound = pygame.mixer.Sound(path.join(img_dir, 'pew.wav'))
+#expl_sounds = []
+#for snd in ['expl3.wav', 'expl6.wav']:
+    #expl_sounds.append(pygame.mixer.Sound(path.join(snd_dir, snd)))
+
 # spawn sprites
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
@@ -168,6 +182,7 @@ while running:
     hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
     for hit in hits:
         score += 50 - hit.radius # add 50 - radius of mob to score for each hit
+        # random.choice(expl_sounds).play()
         m = Mob()
         all_sprites.add(m)
         mobs.add(m)
