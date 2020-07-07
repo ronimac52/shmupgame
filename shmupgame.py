@@ -73,7 +73,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.centerx = WIDTH / 2# position middle of window
         self.rect.bottom = HEIGHT - 10# 10 px from bottom
         self.speedx = 0 # To move side to side (x axis)
-
+        self.shield = 100 # initial value - full shield
     def update(self):# what happens every update in animation loop
         self.speedx = 0
         keystate = pygame.key.get_pressed() #returns dictionary of every key with a boolean True for each pressed key
@@ -212,9 +212,11 @@ while running:
 
 
       # check to see if a mob hits the player
-    hits = pygame.sprite.spritecollide(player, mobs, False, pygame.sprite.collide_circle)
-    if hits:
-        running = False
+    hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_circle)
+    for hit in hits:
+        player.shield -= hit.radius * 2 # subtract the diameter of the meteor from the player shield
+        if player.shield <= 0: # if player shield id less or equal to zero we end the game
+            running = False # end game.
 
     # Render (draw)
     # Draw / render
