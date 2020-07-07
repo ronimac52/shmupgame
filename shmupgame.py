@@ -4,6 +4,7 @@
 
 
 # this comment is just a test to show Louie git and github
+import os, sys
 import pygame
 import random
 from os import path # so we can use local files on computer
@@ -24,12 +25,27 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
 # initialise pygame and create window
-pygame.mixer.pre_init(44100, -16, 1, 256)
+pygame.mixer.pre_init(44100, -16, 4, 1024, devicename=None)
 pygame.init()
-pygame.mixer.init(frequency=44100)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.mixer.init(frequency=44100,size=-16, channels=4, buffer=512, allowedchanges=0 )
+
 pygame.display.set_caption("Shmup")
 clock = pygame.time.Clock()
+
+# define function to load sound
+"""def load_sound(name):
+    class NoneSound:
+        def play(self): pass
+    if not pygame.mixer:
+        return NoneSound()
+    fullname = os.path.join('snd', name)
+    try:
+        sound = pygame.mixer.Sound(fullname)
+    except pygame.error as message:
+        print('Cannot load sound:', wav)
+        raise SystemExit(message)
+    return sound"""
 
 # Define function to draw text
 # with parameters: surf = surface we want text drawn on,
@@ -75,7 +91,9 @@ class Player(pygame.sprite.Sprite):
         bullet = Bullet(self.rect.centerx, self.rect.top)
         all_sprites.add(bullet)
         bullets.add(bullet)
-        #shoot_sound.play()
+        shoot_sound.play()
+        #pygame.mixer.music.load(path.join(snd_dir,'pew.wav')) # workaround as shoot_sound.play() crashes with GIL error
+        #pygame.mixer.music.play()# workaround as shoot_sound.play() crashes with GIL error
 
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
@@ -145,7 +163,8 @@ for img in meteor_list:
     meteor_images.append(pygame.image.load(path.join(img_dir, img)).convert())
 
 # Load all game sounds
-#shoot_sound = pygame.mixer.Sound(path.join(img_dir, 'pew.wav'))
+shoot_sound = pygame.mixer.Sound(path.join(snd_dir, 'pew.wav'))
+#shoot_sound = load_sound("pew.wav")
 #expl_sounds = []
 #for snd in ['expl3.wav', 'expl6.wav']:
     #expl_sounds.append(pygame.mixer.Sound(path.join(snd_dir, snd)))
@@ -161,7 +180,9 @@ for i in range(8):
     all_sprites.add(m)
     mobs.add(m)
 score = 0 # initialise variable to add to and keep track of score
-
+pygame.mixer.music.load(path.join(snd_dir, 'tgfcoder-FrozenJam-SeamlessLoop.ogg'))
+pygame.mixer.music.set_volume(0.4)
+pygame.mixer.music.play(loops=-1)
 # Game Loop
 running = True
 while running:
@@ -182,10 +203,13 @@ while running:
     hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
     for hit in hits:
         score += 50 - hit.radius # add 50 - radius of mob to score for each hit
+        pygame.mixer.music.load(path.join(snd_dir,'expl3.wav'))# workaround as sound.play() crashes with GIL error
+        pygame.mixer.music.play()# workaround as sound.play() crashes with GIL error
         # random.choice(expl_sounds).play()
         m = Mob()
         all_sprites.add(m)
         mobs.add(m)
+
 
       # check to see if a mob hits the player
     hits = pygame.sprite.spritecollide(player, mobs, False, pygame.sprite.collide_circle)
