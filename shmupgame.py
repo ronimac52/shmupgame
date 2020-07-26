@@ -1,9 +1,11 @@
+#!/usr/bin/python3
 # Pygame template - skeleton for new pygame projects - from www.kidscancode.org.
 # Frozen Jam by tgfcoder <https://twitter.com/tgfcoder> licensed under CC-BY-3
 # Art from Kenney.nl
 
 
 # this comment is just a test to show Louie git and github
+#from _future_ import division # so shield bar can show properly as using python2 and integer/real dividion differs to python3
 import os, sys
 import pygame
 import random
@@ -65,6 +67,17 @@ def newmob():
     m = Mob() # spawn new mob
     all_sprites.add(m) # add to all_sprites
     mobs.add(m) # add to mobs group
+
+def draw_shield_bar(surf, x, y, pct):
+    if pct < 0:
+        pct = 0
+    BAR_LENGTH = 100
+    BAR_HEIGHT = 10
+    fill = (pct / 100) * BAR_LENGTH
+    outline_rect = pygame.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
+    fill_rect = pygame.Rect(x, y, fill, BAR_HEIGHT)
+    pygame.draw.rect(surf, GREEN, fill_rect)
+    pygame.draw.rect(surf, WHITE, outline_rect, 2)
 
 # set up Player class
 class Player(pygame.sprite.Sprite):
@@ -225,6 +238,7 @@ while running:
     screen.blit(background, background_rect) # blit combines several bitmaps into one
     all_sprites.draw(screen)
     draw_text(screen, str(score), 18, WIDTH / 2, 10)
+    draw_shield_bar(screen, 5, 5, player.shield) # what it says on the tin
 
     # *after* drawing everything, flip the display
     pygame.display.flip()
