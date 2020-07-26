@@ -60,6 +60,11 @@ def draw_text(surf, text, size, x, y):
     text_rect.midtop = (x, y)
     surf.blit(text_surface, text_rect)
 
+# function to spawn new mobs
+def newmob():
+    m = Mob() # spawn new mob
+    all_sprites.add(m) # add to all_sprites
+    mobs.add(m) # add to mobs group
 
 # set up Player class
 class Player(pygame.sprite.Sprite):
@@ -91,9 +96,9 @@ class Player(pygame.sprite.Sprite):
         bullet = Bullet(self.rect.centerx, self.rect.top)
         all_sprites.add(bullet)
         bullets.add(bullet)
-        shoot_sound.play()
-        #pygame.mixer.music.load(path.join(snd_dir,'pew.wav')) # workaround as shoot_sound.play() crashes with GIL error
-        #pygame.mixer.music.play()# workaround as shoot_sound.play() crashes with GIL error
+        #shoot_sound.play()
+        pygame.mixer.music.load(path.join(snd_dir,'pew.wav')) # workaround as shoot_sound.play() crashes with GIL error
+        pygame.mixer.music.play()# workaround as shoot_sound.play() crashes with GIL error
 
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
@@ -176,9 +181,7 @@ bullets = pygame.sprite.Group()
 player = Player() #create new object in Player class
 all_sprites.add(player) # add object to all_sprites so it gets updated and drawn
 for i in range(8):
-    m = Mob()
-    all_sprites.add(m)
-    mobs.add(m)
+    newmob() # spawn new mob
 score = 0 # initialise variable to add to and keep track of score
 pygame.mixer.music.load(path.join(snd_dir, 'tgfcoder-FrozenJam-SeamlessLoop.ogg'))
 pygame.mixer.music.set_volume(0.4)
@@ -206,15 +209,13 @@ while running:
         pygame.mixer.music.load(path.join(snd_dir,'expl3.wav'))# workaround as sound.play() crashes with GIL error
         pygame.mixer.music.play()# workaround as sound.play() crashes with GIL error
         # random.choice(expl_sounds).play()
-        m = Mob()
-        all_sprites.add(m)
-        mobs.add(m)
-
+        newmob() # spawn a new mob
 
       # check to see if a mob hits the player
     hits = pygame.sprite.spritecollide(player, mobs, True, pygame.sprite.collide_circle)
     for hit in hits:
         player.shield -= hit.radius * 2 # subtract the diameter of the meteor from the player shield
+        newmob() # spawn new mob
         if player.shield <= 0: # if player shield id less or equal to zero we end the game
             running = False # end game.
 
