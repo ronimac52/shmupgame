@@ -1,11 +1,11 @@
-#!/usr/bin/python3
+##!/usr/local/bin
 # Pygame template - skeleton for new pygame projects - from www.kidscancode.org.
 # Frozen Jam by tgfcoder <https://twitter.com/tgfcoder> licensed under CC-BY-3
 # Art from Kenney.nl
 
 
 # this comment is just a test to show Louie git and github
-#from _future_ import division # so shield bar can show properly as using python2 and integer/real dividion differs to python3
+from __future__ import division # so shield bar can show properly as using python2 and integer/real dividion differs to python3
 import os, sys
 import pygame
 import random
@@ -92,6 +92,10 @@ class Player(pygame.sprite.Sprite):
         self.rect.bottom = HEIGHT - 10# 10 px from bottom
         self.speedx = 0 # To move side to side (x axis)
         self.shield = 100 # initial value - full shield
+        self.shoot_delay = 250 # 250 milliseconds
+        self.last_shot = pygame.time.get_ticks()
+
+
     def update(self):# what happens every update in animation loop
         self.speedx = 0
         keystate = pygame.key.get_pressed() #returns dictionary of every key with a boolean True for each pressed key
@@ -99,6 +103,8 @@ class Player(pygame.sprite.Sprite):
             self.speedx = -5
         if keystate[pygame.K_RIGHT]:
             self.speedx = 5
+        if keystate[pygame.K_SPACE]:
+            self.shoot()
         self.rect.x += self.speedx # move on x axis by whatever speed is set on self.speed.x
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
@@ -106,12 +112,15 @@ class Player(pygame.sprite.Sprite):
             self.rect.left = 0
 
     def shoot(self):
-        bullet = Bullet(self.rect.centerx, self.rect.top)
-        all_sprites.add(bullet)
-        bullets.add(bullet)
-        #shoot_sound.play()
-        pygame.mixer.music.load(path.join(snd_dir,'pew.wav')) # workaround as shoot_sound.play() crashes with GIL error
-        pygame.mixer.music.play()# workaround as shoot_sound.play() crashes with GIL error
+        now = pygame.time.get_ticks()
+        if now - self.last_shot > self.shoot_delay:
+            self.last_shot = now
+            bullet = Bullet(self.rect.centerx, self.rect.top)
+            all_sprites.add(bullet)
+            bullets.add(bullet)
+            #shoot_sound.play()
+            pygame.mixer.music.load(path.join(snd_dir,'pew.wav')) # workaround as shoot_sound.play() crashes with GIL error
+            pygame.mixer.music.play()# workaround as shoot_sound.play() crashes with GIL error
 
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
@@ -183,9 +192,9 @@ for img in meteor_list:
 # Load all game sounds
 shoot_sound = pygame.mixer.Sound(path.join(snd_dir, 'pew.wav'))
 #shoot_sound = load_sound("pew.wav")
-#expl_sounds = []
-#for snd in ['expl3.wav', 'expl6.wav']:
-    #expl_sounds.append(pygame.mixer.Sound(path.join(snd_dir, snd)))
+expl_sounds = []
+for snd in ['expl3.wav', 'expl6.wav']:
+    expl_sounds.append(pygame.mixer.Sound(path.join(snd_dir, snd)))
 
 # spawn sprites
 all_sprites = pygame.sprite.Group()
@@ -209,10 +218,10 @@ while running:
         # check for closing window
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                player.shoot()
-    # Update
+
+
+
+            # Update
     all_sprites.update()
 
     # check to see if a bullet hits a mob and delete bullet and mob
@@ -221,7 +230,7 @@ while running:
         score += 50 - hit.radius # add 50 - radius of mob to score for each hit
         pygame.mixer.music.load(path.join(snd_dir,'expl3.wav'))# workaround as sound.play() crashes with GIL error
         pygame.mixer.music.play()# workaround as sound.play() crashes with GIL error
-        # random.choice(expl_sounds).play()
+        #random.choice(expl_sounds).play()
         newmob() # spawn a new mob
 
       # check to see if a mob hits the player
