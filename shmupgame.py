@@ -270,7 +270,7 @@ for i in range(8):
 score = 0 # initialise variable to add to and keep track of score
 pygame.mixer.music.load(path.join(snd_dir, 'tgfcoder-FrozenJam-SeamlessLoop.ogg'))
 pygame.mixer.music.set_volume(0.4)
-pygame.mixer.music.play(loops=-1)
+pygame.mixer.music.play(-1)
 # Game Loop
 running = True
 while running:
@@ -306,6 +306,8 @@ while running:
         all_sprites.add(expl)
         newmob() # spawn new mob
         if player.shield <= 0: # if player shield id less or equal to zero we end the game
+            pygame.mixer.music.load(path.join(snd_dir,'rumble1.ogg'))
+            pygame.mixer.music.play()
             death_explosion = Explosion(player.rect.center, 'player')
             all_sprites.add(death_explosion)
             player.hide()
