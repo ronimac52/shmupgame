@@ -7,9 +7,14 @@
 # this comment is just a test to show Louie git and github
 from __future__ import division # so shield bar can show properly as using python2 and integer/real dividion differs to python3
 import os, sys
+import subprocess
 import pygame
 import random
+import vlc # workaround to play background music soa as to avoid GIL error
 from os import path # so we can use local files on computer
+
+#set up vlc object to play
+plybkgrnd = vlc.MediaPlayer("/home/inor/Documents/Louie_Code/Py/shmup/shmup_Louie/shmupgame/snd/tgfcoder-FrozenJam-SeamlessLoop.ogg")
 
 img_dir = path.join(path.dirname(__file__), 'img') # img_dir variable will be path to img folder
 snd_dir = path.join(path.dirname(__file__), 'snd') # snd_dir = path to sound folder
@@ -29,25 +34,13 @@ YELLOW = (255, 255, 0)
 # initialise pygame and create window
 pygame.mixer.pre_init(44100, -16, 4, 1024, devicename=None)
 pygame.init()
+# pygame.mixer.set_num_channels(20) # trying to solve sound errors
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.mixer.init(frequency=44100,size=-16, channels=4, buffer=512, allowedchanges=0 )
+pygame.mixer.init(frequency=44100,size=-16, channels=4, buffer=1024, allowedchanges=0 )
 
 pygame.display.set_caption("Shmup")
 clock = pygame.time.Clock()
 
-# define function to load sound
-"""def load_sound(name):
-    class NoneSound:
-        def play(self): pass
-    if not pygame.mixer:
-        return NoneSound()
-    fullname = os.path.join('snd', name)
-    try:
-        sound = pygame.mixer.Sound(fullname)
-    except pygame.error as message:
-        print('Cannot load sound:', wav)
-        raise SystemExit(message)
-    return sound"""
 
 # Define function to draw text
 # with parameters: surf = surface we want text drawn on,
@@ -254,11 +247,11 @@ for i in range(9):
 
 # Load all game sounds
 shoot_sound = pygame.mixer.Sound(path.join(snd_dir, 'pew.wav'))
-#shoot_sound = load_sound("pew.wav")
 expl_sounds = []
 for snd in ['expl3.wav', 'expl6.wav']:
     expl_sounds.append(pygame.mixer.Sound(path.join(snd_dir, snd)))
 
+plybkgrnd.play() #using vlc .play function to play background music as workaroung to avoid GIL error
 # spawn sprites
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
@@ -268,9 +261,7 @@ all_sprites.add(player) # add object to all_sprites so it gets updated and drawn
 for i in range(8):
     newmob() # spawn new mob
 score = 0 # initialise variable to add to and keep track of score
-pygame.mixer.music.load(path.join(snd_dir, 'tgfcoder-FrozenJam-SeamlessLoop.ogg'))
-pygame.mixer.music.set_volume(0.4)
-pygame.mixer.music.play(-1)
+
 # Game Loop
 running = True
 while running:
