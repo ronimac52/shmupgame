@@ -2,7 +2,7 @@
 # Pygame template - skeleton for new pygame projects - from www.kidscancode.org.
 # Frozen Jam by tgfcoder <https://twitter.com/tgfcoder> licensed under CC-BY-3
 # Art from Kenney.nl
-
+# powerup sounds by Jalastram (kind thanks) https://www.instagram.com/jalastram/
 
 # this comment is just a test to show Louie git and github
 from __future__ import division # so shield bar can show properly as using python2 and integer/real dividion differs to python3
@@ -22,6 +22,7 @@ snd_dir = path.join(path.dirname(__file__), 'snd') # snd_dir = path to sound fol
 WIDTH = 480 # width of new game window
 HEIGHT = 600 # height ------------
 FPS = 60 # frames per second
+POWERUP_TIME = 5000
 
 # define Colors (R, G, B)
 BLACK = (0, 0, 0)
@@ -97,9 +98,15 @@ class Player(pygame.sprite.Sprite):
         self.lives = 3
         self.hidden = False
         self.hide_timer = pygame.time.get_ticks()
+        self.power = 1
+        self.power_time = pygame.time.get_ticks()
 
 
     def update(self):# what happens every update in animation loop
+        # timeout for powerups
+        if self.power >= 2 and pygame.time.get_ticks() - self.power_time > POWERUP_TIME:
+            self.power -= 1
+            self.power_time = pygame.time.get_ticks()
         # unhide if hidden
     	if self.hidden and pygame.time.get_ticks() - self.hide_timer > 1000:
     	    self.hidden = False
@@ -119,16 +126,30 @@ class Player(pygame.sprite.Sprite):
         if self.rect.left < 0:
             self.rect.left = 0
 
+    def powerup(self):
+        self.power += 1
+        self.power_time = pygame.time.get_ticks()
+
     def shoot(self):
         now = pygame.time.get_ticks()
         if now - self.last_shot > self.shoot_delay:
             self.last_shot = now
-            bullet = Bullet(self.rect.centerx, self.rect.top)
-            all_sprites.add(bullet)
-            bullets.add(bullet)
-            #shoot_sound.play()
-            pygame.mixer.music.load(path.join(snd_dir,'pew.wav')) # workaround as shoot_sound.play() crashes with GIL error
-            pygame.mixer.music.play()# workaround as shoot_sound.play() crashes with GIL error
+            if self.power == 1:
+                bullet = Bullet(self.rect.centerx, self.rect.top)
+                all_sprites.add(bullet)
+                bullets.add(bullet)
+                pygame.mixer.music.load(path.join(snd_dir,'pew.wav')) # workaround as shoot_sound.play() crashes with GIL error
+                pygame.mixer.music.play()# workaround as shoot_sound.play() crashes with GIL error
+            if self.power >= 2:
+                bullet1 = Bullet(self.rect.left, self.rect.centery)
+                bullet2 = Bullet(self.rect.right, self.rect.centery)
+                all_sprites.add(bullet1)
+                all_sprites.add(bullet2)
+                bullets.add(bullet1)
+                bullets.add(bullet2)
+                #shoot_sound.play()
+                pygame.mixer.music.load(path.join(snd_dir,'pew.wav')) # workaround as shoot_sound.play() crashes with GIL error
+                pygame.mixer.music.play()# workaround as shoot_sound.play() crashes with GIL error
 
     def hide(self):
         self.hidden = True
@@ -333,11 +354,15 @@ while running:
     hits = pygame.sprite.spritecollide(player, powerups, True)
     for hit in hits:
         if hit.type == 'shield':
+            pygame.mixer.music.load(path.join(snd_dir,'SFX_Powerup_17.wav'))# workaround as sound.play() crashes with GIL error
+            pygame.mixer.music.play()# workaround as sound.play() crashes with GIL error
             player.shield += random.randrange(10, 30)
             if player.shield >= 100:
                 player.shield = 100
         if hit.type == 'gun':
-            pass
+            pygame.mixer.music.load(path.join(snd_dir,'SFX_Powerup_43.wav'))# workaround as sound.play() crashes with GIL error
+            pygame.mixer.music.play()# workaround as sound.play() crashes with GIL error
+            player.powerup()
 
     # if the player died and the explosion has finished playing
     if player.lives == 0 and not death_explosion.alive():
