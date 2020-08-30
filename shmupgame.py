@@ -249,6 +249,21 @@ class Explosion(pygame.sprite.Sprite):
                 self.rect = self.image.get_rect()
                 self.rect.center = center
 
+def show_go_screen():
+    screen.blit(background, background_rect)
+    draw_text(screen, "SHMUP!", 64, WIDTH / 2, HEIGHT / 4)
+    draw_text(screen, "Arrow keys move, Space to fire", 22,
+              WIDTH / 2, HEIGHT / 2)
+    draw_text(screen, "Press a key to begin", 18, WIDTH / 2, HEIGHT * 3 / 4)
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        clock.tick(FPS)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYUP:
+                waiting = False
 # Load all game graphics
 background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()
 background_rect = background.get_rect()
@@ -293,19 +308,24 @@ for snd in ['expl3.wav', 'expl6.wav']:
 
 plybkgrnd.play() #using vlc .play function to play background music as workaroung to avoid GIL error
 # spawn sprites
-all_sprites = pygame.sprite.Group()
-mobs = pygame.sprite.Group()
-bullets = pygame.sprite.Group()
-powerups = pygame.sprite.Group()
-player = Player() #create new object in Player class
-all_sprites.add(player) # add object to all_sprites so it gets updated and drawn
-for i in range(8):
-    newmob() # spawn new mob
-score = 0 # initialise variable to add to and keep track of score
+
 
 # Game Loop
+game_over = True
 running = True
 while running:
+    if game_over:
+        show_go_screen()
+        game_over = False
+        all_sprites = pygame.sprite.Group()
+        mobs = pygame.sprite.Group()
+        bullets = pygame.sprite.Group()
+        powerups = pygame.sprite.Group()
+        player = Player() #create new object in Player class
+        all_sprites.add(player) # add object to all_sprites so it gets updated and drawn
+        for i in range(8):
+            newmob() # spawn new mob
+        score = 0 # initialise variable to add to and keep track of score
     #keep loop running at correct speed
     clock.tick(FPS)
     # Process input (events)
@@ -366,7 +386,7 @@ while running:
 
     # if the player died and the explosion has finished playing
     if player.lives == 0 and not death_explosion.alive():
-    	running = False
+    	game_over = True
 
 
 
